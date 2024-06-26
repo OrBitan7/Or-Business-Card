@@ -1,9 +1,3 @@
-<!-- <?php
-  include "config.php";
-  $query = "SELECT * FROM portfolioSh.protfolio_orbitan";
-  $result = mysqli_query($connection , $query);
-?> -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -251,20 +245,7 @@
           style="position: relative; height: 740.952px;">
 
           <!-- <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="100"> -->
-          <!-- <?php
-  while($row = mysqli_fetch_assoc($result))
-  {
-   echo' <div class="col-lg-4 col-md-6 portfolio-item filter-web">';
-   echo' <div class="portfolio-wrap">';
-   echo' <img src="'.$row["img"].'" class="img-fluid" alt="">';
-   echo' <div class="portfolio-links">';
-   echo' <a href="'.$row["github_url"].'" title="GitHub"><i class="bx bxl-github"></i></a>';
-   echo' <a href="'.$row["project_url"].'" title="More Details"><i class="bx bx-link"></i></a>';
-   echo' </div>';
-   echo' </div>';
-   echo' </div>';
-  }
-?> -->
+
         </div>
 
       </div>
@@ -303,7 +284,8 @@
               </div>
             </div>
             <div class="col-lg-7">
-              <form id="contact-form" class="php-email-form" data-aos="fade-up" data-aos-delay="200" action="arn:aws:execute-api:eu-west-1:381492125369:ov9o0dlugd/*/POST/" method="POST">
+              <form id="contact-form" class="php-email-form" data-aos="fade-up" data-aos-delay="200"
+                action="arn:aws:execute-api:eu-west-1:381492125369:ov9o0dlugd/*/POST/contact-form" method="POST">
                 <div class="row gy-4">
                   <div class="col-md-6">
                     <label for="name-field" class="pb-2">Your Name</label>
@@ -329,40 +311,61 @@
                   </div>
                 </div>
               </form>
-              
+              <script>
+                document.addEventListener('DOMContentLoaded', (event) => {
+                  document.getElementById('contact-form').addEventListener('submit', function (event) {
+                    event.preventDefault();
 
+                    const form = event.target;
+                    const formData = new FormData(form);
 
-              <!-- <script>
-                document.getElementById('contact-form').addEventListener('submit', function (event) {
-                  event.preventDefault();
+                    const data = {
+                      name: formData.get('name'),
+                      email: formData.get('email'),
+                      subject: formData.get('subject'),
+                      message: formData.get('message')
+                    };
 
-                  const formData = new FormData(this);
-                  const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
+                    const actionUrl = form.getAttribute('action');
 
-                  fetch('https://your-api-id.execute-api.eu-west-1.amazonaws.com/prod/contact', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: jsonData
-                  })
-                    .then(response => response.json())
-                    .then(data => {
-                      document.querySelector('.sent-message').style.display = 'block';
-                      document.querySelector('.loading').style.display = 'none';
-                      this.reset();
+                    // Display loading message
+                    document.querySelector('.loading').classList.add('d-block');
+                    document.querySelector('.error-message').classList.remove('d-block');
+                    document.querySelector('.sent-message').classList.remove('d-block');
+
+                    fetch(actionUrl, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(data)
                     })
-                    .catch(error => {
-                      document.querySelector('.error-message').textContent = 'An error occurred. Please try again.';
-                      document.querySelector('.error-message').style.display = 'block';
-                      document.querySelector('.loading').style.display = 'none';
-                    });
+                      .then(response => {
+                        // Hide loading message
+                        document.querySelector('.loading').classList.remove('d-block');
 
-                  document.querySelector('.loading').style.display = 'block';
-                  document.querySelector('.error-message').style.display = 'none';
-                  document.querySelector('.sent-message').style.display = 'none';
+                        if (response.ok) {
+                          return response.text();
+                        } else {
+                          return response.text().then(text => { throw new Error(text); });
+                        }
+                      })
+                      .then(responseText => {
+                        if (responseText.trim() === 'OK') {
+                          document.querySelector('.sent-message').classList.add('d-block');
+                          form.reset();
+                        } else {
+                          throw new Error(responseText);
+                        }
+                      })
+                      .catch(error => {
+                        document.querySelector('.error-message').innerText = error;
+                        document.querySelector('.error-message').classList.add('d-block');
+                      });
+                  });
                 });
-              </script> -->
+              </script>
+
 
 
   </main><!-- End #main -->
@@ -399,7 +402,7 @@
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/typed.js/typed.umd.js"></script>
   <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <!-- <script src="assets/vendor/php-email-form/validate.js"></script> -->
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
@@ -407,6 +410,3 @@
 </body>
 
 </html>
-<!-- <?php
-  mysqli_close($connection);
-?> -->
