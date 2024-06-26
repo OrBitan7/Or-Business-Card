@@ -359,7 +359,8 @@
                       const result = await response.json();
                       displayAlert(result.message, response.ok ? 'success' : 'error');
                     } catch (error) {
-                      displayAlert('An error occurred while sending the form.', 'error');
+                      console.error('Fetch error:', error);
+                      displayAlert(`An error occurred while sending the form: ${error.message}`, 'error');
                     }
                   });
                 });
