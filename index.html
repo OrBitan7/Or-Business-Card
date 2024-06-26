@@ -8,6 +8,7 @@
   <title>Or Bitan</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+  <!-- QR: -->
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
@@ -419,7 +420,7 @@
                   });
                 });
                 function sanitizeInput(input) {
-                  const charsToRemove = ['<', '>', '{', '}', '[', ']', '%'];
+                  const charsToRemove = ['<', '>', '{', '}', '[', ']', '"', '&', '\\'];
                   charsToRemove.forEach(char => {
                     input = input.split(char).join(' -invalid character- ');
                   });
