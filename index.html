@@ -339,7 +339,7 @@
                   const form = document.getElementById('contact-form');
                   form.addEventListener('submit', async function (event) {
                     event.preventDefault();
-                    console.log('Form submitted'); // Add this line for debugging
+                    // console.log('Form submitted'); // Add this line for debugging
 
                     const formData = new FormData(form);
                     const formObject = {};
@@ -357,16 +357,22 @@
                       });
 
                       const result = await response.json();
-                      displayAlert(result.message, response.ok ? 'success' : 'error');
+                      // console.log('Result:', result);
+
+                      if (response.ok) {
+                        displayAlert(result.message, 'success');
+                      } else {
+                        displayAlert(result.message, 'error');
+                      }
                     } catch (error) {
-                      console.error('Fetch error:', error);
+                      // console.error('Fetch error:', error);
                       displayAlert(`An error occurred while sending the form: ${error.message}`, 'error');
                     }
                   });
                 });
 
                 function displayAlert(message, type) {
-                  console.log(`Displaying alert: ${message} - Type: ${type}`); // Debugging log
+                  // console.log(`Displaying alert: ${message} - Type: ${type}`); // Debugging log
                   const alertContainer = document.getElementById('alert-container');
                   const alert = document.createElement('div');
                   alert.className = `alert alert-${type}`;
@@ -375,7 +381,7 @@
 
                   setTimeout(() => {
                     alertContainer.removeChild(alert);
-                  }, 3000);
+                  }, 10000);
                 }
               </script>
               <!-- <script>
