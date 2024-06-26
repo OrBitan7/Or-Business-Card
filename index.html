@@ -8,7 +8,7 @@
   <title>Or Bitan</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -55,6 +55,15 @@
       background-color: #f8d7da;
       border-color: #f5c6cb;
     }
+
+    .qrcode-container {
+      text-align: center;
+    }
+
+    .qrcode-container div {
+      display: inline-block;
+      margin: 10px auto;
+    }
   </style>
 </head>
 
@@ -87,7 +96,7 @@
           <li><a href="#about" class="nav-link scrollto"><i class="bx bx-user"></i> <span>About</span></a></li>
           <li><a href="#resume" class="nav-link scrollto"><i class="bx bx-file-blank"></i> <span>Resume</span></a></li>
           <li><a href="#portfolio" class="nav-link scrollto"><i class="bx bx-book-content"></i>
-              <span>Portfolio</span></a></li>
+              <span>QR Codes</span></a></li>
           <li><a href="#contact" class="nav-link scrollto"><i class="bx bx-envelope"></i> <span>Contact</span></a></li>
         </ul>
       </nav><!-- .nav-menu -->
@@ -258,8 +267,9 @@
       <div class="container">
 
         <div class="section-title">
-          <h2>Portfolio</h2>
-          <p>some of my projects are listed below, for more projects please visit my github page.</p>
+          <h2>QR Codes</h2>
+          <p>You can view my CV by scanning the first QR code, and the second one is for accessing my GitHub
+            repositories.</p>
         </div>
         <div class="row portfolio-container aos-init aos-animate" data-aos="fade-up" data-aos-delay="100"
           style="position: relative; height: 740.952px;">
@@ -268,6 +278,44 @@
 
         </div>
 
+        <div class="qrcode-container">
+          <h4>CV:</h4>
+          <div id="qrcode"></div>
+        </div>
+        <br><br>
+        <div class="qrcode-container">
+          <h4>GitHub repositories:</h4>
+          <div id="qrcode2"></div>
+        </div>
+        <script>
+          // Wait for the document to fully load before running the script
+          document.addEventListener("DOMContentLoaded", function () {
+            // Check if QRCode is defined
+            if (typeof QRCode !== 'undefined') {
+              // Generate QR code
+              var qrCodeDiv = document.getElementById("qrcode");
+              var qrCodeDiv2 = document.getElementById("qrcode2");
+              var qr = new QRCode(qrCodeDiv, {
+                text: "https://main.d1rpg8bt7mz9o9.amplifyapp.com/cv.pdf", // QR code content (URL or any text)
+                width: 200,
+                height: 200,
+                colorDark: "#000000", // Color of the QR code
+                colorLight: "#ffffff", // Background color of the QR code
+                correctLevel: QRCode.CorrectLevel.H // Error correction level (H = High)
+              });
+              var qr2 = new QRCode(qrCodeDiv2, {
+                text: "https://github.com/OrBitan7?tab=repositories", // QR code content (URL or any text)
+                width: 200,
+                height: 200,
+                colorDark: "#000000", // Color of the QR code
+                colorLight: "#ffffff", // Background color of the QR code
+                correctLevel: QRCode.CorrectLevel.H // Error correction level (H = High)
+              });
+            } else {
+              console.error('QRCode library not loaded.');
+            }
+          });
+        </script>
       </div>
     </section><!-- End Portfolio Section -->
 
@@ -344,6 +392,67 @@
                     const formData = new FormData(form);
                     const formObject = {};
                     formData.forEach((value, key) => {
+                      formObject[key] = sanitizeInput(value);
+                    });
+
+                    try {
+                      const response = await fetch(form.action, {
+                        method: form.method,
+                        headers: {
+                          'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams(formObject).toString(),
+                      });
+
+                      const result = await response.json();
+                      // console.log('Result:', result);
+
+                      if (response.ok) {
+                        displayAlert('Email sent successfully!', 'success');
+                      } else {
+                        displayAlert(result.message, 'error');
+                      }
+                    } catch (error) {
+                      // console.error('Fetch error:', error);
+                      displayAlert(`An error occurred while sending the form: ${error.message}`, 'error');
+                    }
+                  });
+                });
+                function sanitizeInput(input) {
+                  const charsToRemove = ['<', '>', '{', '}', '[', ']', '%'];
+                  charsToRemove.forEach(char => {
+                    input = input.split(char).join(' -invalid character- ');
+                  });
+                  const temp = document.createElement('div');
+                  temp.textContent = input;
+                  return temp.innerHTML;
+                }
+                function displayAlert(message, type) {
+                  // console.log(`Displaying alert: ${message} - Type: ${type}`); // Debugging log
+                  const alertContainer = document.getElementById('alert-container');
+                  const alert = document.createElement('div');
+                  alert.className = `alert alert-${type}`;
+                  alert.innerText = message;
+                  alertContainer.appendChild(alert);
+
+                  setTimeout(() => {
+                    alertContainer.removeChild(alert);
+                  }, 10000);
+                }
+              </script>
+
+
+
+              <!-- <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  const form = document.getElementById('contact-form');
+                  form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+                    // console.log('Form submitted'); // Add this line for debugging
+
+                    const formData = new FormData(form);
+                    const formObject = {};
+                    formData.forEach((value, key) => {
                       formObject[key] = value;
                     });
 
@@ -383,60 +492,6 @@
                     alertContainer.removeChild(alert);
                   }, 10000);
                 }
-              </script>
-              <!-- <script>
-                document.addEventListener('DOMContentLoaded', (event) => {
-                  document.getElementById('contact-form').addEventListener('submit', function (event) {
-                    event.preventDefault();
-
-                    const form = event.target;
-                    const formData = new FormData(form);
-
-                    const data = {
-                      name: formData.get('name'),
-                      email: formData.get('email'),
-                      subject: formData.get('subject'),
-                      message: formData.get('message')
-                    };
-
-                    const actionUrl = form.getAttribute('action');
-
-                    // Display loading message
-                    document.querySelector('.loading').classList.add('d-block');
-                    document.querySelector('.error-message').classList.remove('d-block');
-                    document.querySelector('.sent-message').classList.remove('d-block');
-
-                    fetch(actionUrl, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(data)
-                    })
-                      .then(response => {
-                        // Hide loading message
-                        document.querySelector('.loading').classList.remove('d-block');
-
-                        if (response.ok) {
-                          return response.text();
-                        } else {
-                          return response.text().then(text => { throw new Error(text); });
-                        }
-                      })
-                      .then(responseText => {
-                        if (responseText.trim() === 'OK') {
-                          document.querySelector('.sent-message').classList.add('d-block');
-                          form.reset();
-                        } else {
-                          throw new Error(responseText);
-                        }
-                      })
-                      .catch(error => {
-                        document.querySelector('.error-message').innerText = error;
-                        document.querySelector('.error-message').classList.add('d-block');
-                      });
-                  });
-                });
               </script> -->
 
 
