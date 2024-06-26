@@ -334,6 +334,7 @@
                   });
 
                   const result = await response.json();
+                  console.log(result);
                   displayAlert(result.message, response.ok ? 'success' : 'error');
                 });
 
