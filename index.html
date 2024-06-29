@@ -422,7 +422,7 @@
                 function sanitizeInput(input) {
                   const charsToRemove = ['<', '>', '{', '}', '[', ']', '"', '&', '\\'];
                   charsToRemove.forEach(char => {
-                    input = input.split(char).join(' -invalid character- ');
+                    input = input.split(char).join(' -invalid- ');
                   });
                   const temp = document.createElement('div');
                   temp.textContent = input;
