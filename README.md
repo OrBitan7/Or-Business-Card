@@ -3,7 +3,6 @@
 
 This project is a digital business card showcasing [Your Name/Company Name], hosted on AWS using a serverless architecture.
 
-![Screenshot](https://main.d1rpg8bt7mz9o9.amplifyapp.com/)  
 [View the Business Card](https://main.d1rpg8bt7mz9o9.amplifyapp.com/)
 
 ## Features
